@@ -1,5 +1,8 @@
 import postApi from './api/postApi';
-import { updateTextPost } from './utils';
+import { updateTextPost, truncateText } from './utils';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 function createPostElement(post) {
   const liElementTemplate = document.querySelector('#postItemTemplate');
@@ -10,18 +13,18 @@ function createPostElement(post) {
 
   updateTextPost(liElement, '[data-id="title"]', post.title);
   updateTextPost(liElement, '[data-id="author"]', post.author);
-  updateTextPost(liElement, '[data-id="description"', post.description);
-  updateTextPost(
-    liElement,
-    '[data-id="timeSpan"',
-    `${new Date(post.createdAt).toLocaleDateString('en-US')} ${new Date(
-      post.createdAt,
-    ).toLocaleTimeString('en-US')}`,
-  );
+  updateTextPost(liElement, '[data-id="description"', truncateText(post.description, 100));
+
+  updateTextPost(liElement, '[data-id="timeSpan"', ` - ${dayjs(post.updatedAt).fromNow()}`);
 
   const thumb = liElement.querySelector('[data-id="thumbnail"]');
-  if (thumb) thumb.src = post.imageUrl;
-  
+  if (thumb) {
+    thumb.src = post.imageUrl;
+    thumb.addEventListener('error', () => {
+      thumb.src = 'https://placehold.co/600x400?text=Thumbnail';
+    });
+  }
+
   return liElement;
 }
 
