@@ -94,3 +94,10 @@ ul {
 .carousel-inner {
   height: 100%;
 }
+
+#search {
+  justify-content: center;
+}
+#search > #searchInput {
+  max-width: 50%;
+}
