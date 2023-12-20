@@ -1,8 +1,8 @@
-import { renderPostList, updateTextPost } from './utils';
-import postApi from './api/postApi';
 import dayjs from 'dayjs';
+import postApi from './api/postApi';
+import { updateTextPost } from './utils';
 
-function updatePostDetail() {
+function updatePostDetail(data) {
   // Update cover picture
   const postHeroImage = document.getElementById('postHeroImage');
   const bgImg = new Image();
@@ -39,7 +39,7 @@ function updatePostDetail() {
     const data = await postApi.getById(id);
     if (!data) return;
 
-    updatePostDetail();
+    updatePostDetail(data);
   } catch (error) {
     console.log('Error postApi', error);
   }
