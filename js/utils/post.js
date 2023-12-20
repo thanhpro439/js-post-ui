@@ -18,6 +18,9 @@ export function createPostElement(post) {
   updateTextPost(liElement, '[data-id="description"', truncateText(post.description, 100));
   updateTextPost(liElement, '[data-id="timeSpan"', ` - ${dayjs(post.updatedAt).fromNow()}`);
 
+  // set ID for li element
+  liElement.dataset.id = post.id;
+
   const thumb = liElement.querySelector('[data-id="thumbnail"]');
   if (thumb) {
     thumb.src = post.imageUrl;

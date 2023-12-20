@@ -19,6 +19,7 @@ async function handleFilterChange(filterName, filterValue) {
   // re-render post list
   renderPostList(data);
   paginationPost(pagination);
+  handleClickPost();
 }
 
 function setDefaultQueryParam() {
@@ -30,6 +31,21 @@ function setDefaultQueryParam() {
   history.pushState({}, '', url);
 
   return url.searchParams;
+}
+
+function handleClickPost() {
+  // get post list
+  const liElements = document.querySelectorAll('#postList > li');
+  if (!liElements) return;
+
+  // bind click event
+  liElements.forEach((li) => {
+    li.addEventListener('click', () => {
+      // get id of this post
+      const postID = li.dataset.id;
+      window.open(`/post-detail.html?id=${postID}`, '_blank');
+    });
+  });
 }
 
 (async () => {
@@ -56,6 +72,8 @@ function setDefaultQueryParam() {
     renderPostList(data);
 
     paginationPost(pagination);
+
+    handleClickPost();
   } catch (error) {
     console.log('Error postApi', error);
   }
