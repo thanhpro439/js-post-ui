@@ -46,3 +46,25 @@ export function renderPostList(postList) {
     postListElement.appendChild(liElement);
   });
 }
+
+export function updatePostDetail(data) {
+  // Update cover picture
+  const postHeroImage = document.getElementById('postHeroImage');
+  const bgImg = new Image();
+  bgImg.src = data.imageUrl;
+  postHeroImage.style.backgroundImage = `url(${bgImg.src})`;
+
+  bgImg.onerror = function () {
+    postHeroImage.style.backgroundImage = "url('https://placehold.co/600x400?text=Thumbnail')";
+  };
+
+  // Update post detail
+  updateTextPost(document, '#postDetailTitle', data.title);
+  updateTextPost(document, '#postDetailAuthor', data.author);
+  updateTextPost(document, '#postDetailDescription', data.description);
+  updateTextPost(
+    document,
+    '#postDetailTimeSpan',
+    dayjs(data.updatedAt).format(' - YYYY/MM/DD HH:mm'),
+  );
+}

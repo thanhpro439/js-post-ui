@@ -1,28 +1,5 @@
-import dayjs from 'dayjs';
 import postApi from './api/postApi';
-import { updateTextPost } from './utils';
-
-function updatePostDetail(data) {
-  // Update cover picture
-  const postHeroImage = document.getElementById('postHeroImage');
-  const bgImg = new Image();
-  bgImg.src = data.imageUrl;
-  postHeroImage.style.backgroundImage = `url(${bgImg.src})`;
-
-  bgImg.onerror = function () {
-    postHeroImage.style.backgroundImage = "url('https://placehold.co/600x400?text=Thumbnail')";
-  };
-
-  // Update post detail
-  updateTextPost(document, '#postDetailTitle', data.title);
-  updateTextPost(document, '#postDetailAuthor', data.author);
-  updateTextPost(document, '#postDetailDescription', data.description);
-  updateTextPost(
-    document,
-    '#postDetailTimeSpan',
-    dayjs(data.updatedAt).format(' - YYYY/MM/DD HH:mm'),
-  );
-}
+import { updatePostDetail } from './utils';
 
 function handleClickImage() {
   // get all image
@@ -68,11 +45,20 @@ function handleClickImage() {
   });
 }
 
+function handleClickEditPost(id) {
+  // Get element
+  const editPost = document.getElementById('goToEditPageLink');
+  if (!editPost) return;
+
+  editPost.addEventListener('click', () => {
+    const editDir = `/add-edit-post.html?id=${id}`;
+    window.open(editDir);
+  });
+}
+
 // main
 (async () => {
   try {
-    handleClickImage();
-
     //get params
     const url = new URL(window.location);
     const id = url.searchParams.get('id');
@@ -86,6 +72,9 @@ function handleClickImage() {
     if (!data) return;
 
     updatePostDetail(data);
+    handleClickImage();
+
+    handleClickEditPost(id);
   } catch (error) {
     console.log('Error postApi', error);
   }
