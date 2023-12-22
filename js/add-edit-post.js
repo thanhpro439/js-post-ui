@@ -1,7 +1,4 @@
-import axios from 'axios';
 import postApi from './api/postApi';
-
-
 
 function updateCurrentValuePost(data, postHeroImage, titleInput, authorInput, desInput) {
   if (!data) return;
@@ -75,8 +72,24 @@ async function handleSaveBtn(data, postHeroImage, titleInput, authorInput, desIn
         imageUrl: postHeroImage.dataset.bg,
       };
       postApi.add(updatedData);
+
+      // update id param to url
+      const url = new URL(window.location);
+      url.searchParams.set('id', updatedData.id);
+      history.pushState({}, '', url);
     });
   }
+}
+
+function viewPostClick() {
+  const viewPostBtn = document.getElementById('viewPost');
+  if (!viewPostBtn) return;
+
+  viewPostBtn.addEventListener('click', () => {
+    const url = new URL(window.location);
+    const id = url.searchParams.get('id');
+    window.open(`/post-detail.html?id=${id}`);
+  });
 }
 
 (async () => {
@@ -100,6 +113,8 @@ async function handleSaveBtn(data, postHeroImage, titleInput, authorInput, desIn
       handleClickChangeImage(postHeroImage);
       handleSaveBtn(newData, postHeroImage, titleInput, authorInput, desInput, saveBtn);
     }
+
+    viewPostClick();
   } catch (error) {
     console.log('Error', error);
   }

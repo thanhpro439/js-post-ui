@@ -1,0 +1,19 @@
+.success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.modal-body {
+  padding-bottom: 1rem;
+}
+
+.modal-content {
+  width: 70%;
+}
+
+#backToHome a {
+  text-decoration: none;
+  color: white;
+}

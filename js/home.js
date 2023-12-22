@@ -38,12 +38,25 @@ function handleClickPost() {
   const liElements = document.querySelectorAll('#postList > li');
   if (!liElements) return;
 
-  // bind click event
+  // bind click event for posts
   liElements.forEach((li) => {
-    li.addEventListener('click', () => {
-      // get id of this post
-      const postID = li.dataset.id;
+    // get id of this post
+    const postID = li.dataset.id;
+
+    li.addEventListener('click', (e) => {
+      // prevent bubbling click
+      const postitemmenu = li.querySelector('[data-id="postitemmenu"]');
+
+      if (postitemmenu && postitemmenu.contains(e.target)) return;
       window.open(`/post-detail.html?id=${postID}`, '_blank');
+    });
+
+    // bind click event for edit/delete post
+    const editBtn = li.querySelector('[data-id="edit"]');
+    if (!editBtn) return;
+
+    editBtn.addEventListener('click', () => {
+      window.open(`/add-edit-post.html?id=${postID}`, '_blank');
     });
   });
 }
