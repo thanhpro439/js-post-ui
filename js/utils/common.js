@@ -10,3 +10,10 @@ export function truncateText(text, maxlength) {
 
   return `${text.slice(0, maxlength - 1)}…`;
 }
+
+export function showModal() {
+  const lightbox = document.getElementById('lightbox');
+  if (!lightbox) return;
+  const lighboxModal = new bootstrap.Modal(lightbox);
+  lighboxModal.show();
+}

@@ -1,3 +1,4 @@
+import { showModal } from '../utils';
 import axiosClient from './axiosApi';
 
 const postApi = {
@@ -13,12 +14,28 @@ const postApi = {
 
   add(data) {
     const url = '/posts';
-    return axiosClient.post(url, data);
+    axiosClient
+      .post(url, data)
+      .then((res) => {
+        showModal();
+        return res;
+      })
+      .catch((err) => {
+        console.log('error', err);
+      });
   },
 
   update(data) {
     const url = `/posts/${data.id}`;
-    return axiosClient.patch(url, data);
+    axiosClient
+      .patch(url, data)
+      .then((res) => {
+        showModal();
+        return res;
+      })
+      .catch((err) => {
+        console.log('error', err);
+      });
   },
 
   remove(id) {
