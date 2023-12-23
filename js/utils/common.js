@@ -17,3 +17,28 @@ export function showModal() {
   const lighboxModal = new bootstrap.Modal(lightbox);
   lighboxModal.show();
 }
+
+export function updateFormField(form, field, data) {
+  const f = form.querySelector(`[name=${field}]`);
+  if (!f) return;
+  f.value = data[field];
+}
+
+export function updateHeroImage(urlImg) {
+  const heroImage = document.getElementById('postHeroImage');
+  if (!heroImage) return;
+
+  const bgImg = new Image();
+  bgImg.src = urlImg;
+
+  heroImage.setAttribute('data-bg', bgImg.src);
+  heroImage.style.backgroundImage = `url(${bgImg.src})`;
+
+  bgImg.onerror = function () {
+    heroImage.style.backgroundImage = "url('https://placehold.co/600x400?text=Thumbnail')";
+  };
+}
+
+export function randomIntergerNumber(max) {
+  return Math.floor(Math.random() * max);
+}

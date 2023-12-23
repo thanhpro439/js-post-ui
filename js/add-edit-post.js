@@ -1,5 +1,45 @@
 import postApi from './api/postApi';
 import { handlePostForm } from './utils';
+import * as yup from '/node_modules/.vite/deps/yup.js';
+
+function handleOnSubmit(form) {
+  // submit form
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const updateData = {};
+
+    // get value from field
+    ['title', 'author', 'description'].forEach((field) => {
+      updateData[field] = form.querySelector(`[name=${field}]`).value;
+    });
+
+    updateData['imageUrl'] = document.getElementById('postHeroImage').getAttribute('data-bg');
+
+    // validate data
+    const dataObject = yup.object().shape({
+      title: yup.string().required(),
+      author: yup.string().required(),
+      description: yup.string().required(),
+    });
+
+    try {
+      await dataObject.validate(updateData, {
+        abortEarly: false,
+      });
+    } catch (error) {
+
+      // show error on log
+      // if (!form.checkValidity()) {
+      //   console.log('error', error);
+      //   e.preventDefault();
+      //   e.stopPropagation();
+      // }
+
+      form.classList.add('was-validated');
+    }
+  });
+}
 
 (async () => {
   try {
@@ -16,11 +56,33 @@ import { handlePostForm } from './utils';
     handlePostForm({
       formId: 'postForm',
       defaultData,
-      onSubmit: function (formValue) {
-        console.log('Form value', formValue);
-      },
+      onSubmit: handleOnSubmit,
     });
   } catch (error) {
     console.log('Error', error);
   }
 })();
+
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+// (function () {
+//   'use strict';
+
+//   // Fetch all the forms we want to apply custom Bootstrap validation styles to
+//   var forms = document.querySelectorAll('.needs-validation');
+
+//   // Loop over them and prevent submission
+//   Array.prototype.slice.call(forms).forEach(function (form) {
+//     form.addEventListener(
+//       'submit',
+//       function (event) {
+//         if (!form.checkValidity()) {
+//           event.preventDefault();
+//           event.stopPropagation();
+//         }
+
+//         form.classList.add('was-validated');
+//       },
+//       false,
+//     );
+//   });
+// })();
