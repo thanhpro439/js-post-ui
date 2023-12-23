@@ -27,10 +27,6 @@ section.hero {
   cursor: pointer;
 }
 
-.modal-body {
-  padding-bottom: 0;
-}
-
 #lightbox .prev {
   position: absolute;
   left: 20px;
