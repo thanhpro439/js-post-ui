@@ -3,7 +3,7 @@ import {
   updateHeroImage,
   randomIntergerNumber,
 } from './common';
-import { string } from 'yup';
+import { string, object } from 'yup';
 
 function handleChangeImageBtn(postChangeImage) {
   postChangeImage.addEventListener('click', () => {
@@ -16,7 +16,7 @@ function handleChangeImageBtn(postChangeImage) {
 }
 
 async function validateForm(form, dataForm) {
-  const dataObject = yup.object({
+  const dataObject = object({
     title: string().required(),
     author: string().required(),
     description: string().required(),
