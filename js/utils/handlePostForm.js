@@ -1,5 +1,9 @@
-import { updateFormField, updateHeroImage, randomIntergerNumber } from './common';
-import * as yup from '/node_modules/.vite/deps/yup.js';
+import {
+  updateFormField,
+  updateHeroImage,
+  randomIntergerNumber,
+} from './common';
+import { string } from 'yup';
 
 function handleChangeImageBtn(postChangeImage) {
   postChangeImage.addEventListener('click', () => {
@@ -12,11 +16,11 @@ function handleChangeImageBtn(postChangeImage) {
 }
 
 async function validateForm(form, dataForm) {
-  const dataObject = yup.object().shape({
-    title: yup.string().required(),
-    author: yup.string().required(),
-    description: yup.string().required(),
-    imageUrl: yup.string().url().required('Please add cover photo.'),
+  const dataObject = yup.object({
+    title: string().required(),
+    author: string().required(),
+    description: string().required(),
+    imageUrl: string().url().required('Please add cover photo.'),
   });
 
   try {
