@@ -1,11 +1,8 @@
-import axios from 'axios';
 import postApi from './api/postApi';
-import { handlePostForm } from './utils';
-import axiosClient from './api/axiosApi';
+import { handlePostForm, toast } from './utils';
 
 async function handleSubmitForm(formValue) {
   try {
-    console.log('click');
     // Disable Save button
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.disabled = true;
@@ -15,18 +12,19 @@ async function handleSubmitForm(formValue) {
       ? await postApi.update(formValue)
       : await postApi.add(formValue);
 
-    // Toast message 
+    // Toast message
+    toast.success('Saved post successfully!');
 
-    
     // Enable save button
     if (savePost) saveBtn.disabled = false;
 
     // redirect to post
     setTimeout(() => {
-      if (savePost) window.location.assign(`/post-detail.html?id=${savePost.id}`);
-    }, 3000);
+      if (savePost)
+        window.location.assign(`/post-detail.html?id=${savePost.id}`);
+    }, 4000);
   } catch (error) {
-    console.log('error', error);
+    toast.error(`Error: ${error}`);
   }
 }
 
