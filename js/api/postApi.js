@@ -14,28 +14,12 @@ const postApi = {
 
   add(data) {
     const url = '/posts';
-    axiosClient
-      .post(url, data)
-      .then((res) => {
-        showModal();
-        return res;
-      })
-      .catch((err) => {
-        console.log('error', err);
-      });
+    return axiosClient.post(url, data);
   },
 
   update(data) {
     const url = `/posts/${data.id}`;
-    axiosClient
-      .patch(url, data)
-      .then((res) => {
-        showModal();
-        return res;
-      })
-      .catch((err) => {
-        console.log('error', err);
-      });
+    return axiosClient.patch(url, data);
   },
 
   remove(id) {

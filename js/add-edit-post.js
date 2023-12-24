@@ -1,44 +1,33 @@
+import axios from 'axios';
 import postApi from './api/postApi';
 import { handlePostForm } from './utils';
-import * as yup from '/node_modules/.vite/deps/yup.js';
+import axiosClient from './api/axiosApi';
 
-function handleOnSubmit(form) {
-  // submit form
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+async function handleSubmitForm(formValue) {
+  try {
+    console.log('click');
+    // Disable Save button
+    const saveBtn = document.getElementById('saveBtn');
+    saveBtn.disabled = true;
 
-    const updateData = {};
+    // call api
+    let savePost = formValue.id
+      ? await postApi.update(formValue)
+      : await postApi.add(formValue);
 
-    // get value from field
-    ['title', 'author', 'description'].forEach((field) => {
-      updateData[field] = form.querySelector(`[name=${field}]`).value;
-    });
+    // Toast message 
 
-    updateData['imageUrl'] = document.getElementById('postHeroImage').getAttribute('data-bg');
+    
+    // Enable save button
+    if (savePost) saveBtn.disabled = false;
 
-    // validate data
-    const dataObject = yup.object().shape({
-      title: yup.string().required(),
-      author: yup.string().required(),
-      description: yup.string().required(),
-    });
-
-    try {
-      await dataObject.validate(updateData, {
-        abortEarly: false,
-      });
-    } catch (error) {
-
-      // show error on log
-      // if (!form.checkValidity()) {
-      //   console.log('error', error);
-      //   e.preventDefault();
-      //   e.stopPropagation();
-      // }
-
-      form.classList.add('was-validated');
-    }
-  });
+    // redirect to post
+    setTimeout(() => {
+      if (savePost) window.location.assign(`/post-detail.html?id=${savePost.id}`);
+    }, 3000);
+  } catch (error) {
+    console.log('error', error);
+  }
 }
 
 (async () => {
@@ -56,33 +45,9 @@ function handleOnSubmit(form) {
     handlePostForm({
       formId: 'postForm',
       defaultData,
-      onSubmit: handleOnSubmit,
+      onSubmit: handleSubmitForm,
     });
   } catch (error) {
     console.log('Error', error);
   }
 })();
-
-// Example starter JavaScript for disabling form submissions if there are invalid fields
-// (function () {
-//   'use strict';
-
-//   // Fetch all the forms we want to apply custom Bootstrap validation styles to
-//   var forms = document.querySelectorAll('.needs-validation');
-
-//   // Loop over them and prevent submission
-//   Array.prototype.slice.call(forms).forEach(function (form) {
-//     form.addEventListener(
-//       'submit',
-//       function (event) {
-//         if (!form.checkValidity()) {
-//           event.preventDefault();
-//           event.stopPropagation();
-//         }
-
-//         form.classList.add('was-validated');
-//       },
-//       false,
-//     );
-//   });
-// })();

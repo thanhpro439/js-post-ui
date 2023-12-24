@@ -26,12 +26,13 @@ export function updateFormField(form, field, data) {
 
 export function updateHeroImage(urlImg) {
   const heroImage = document.getElementById('postHeroImage');
-  if (!heroImage) return;
+  const inputImage = document.getElementById('postInputImageCover');
+  if (!heroImage || !inputImage) return;
 
   const bgImg = new Image();
   bgImg.src = urlImg;
 
-  heroImage.setAttribute('data-bg', bgImg.src);
+  inputImage.value = bgImg.src;
   heroImage.style.backgroundImage = `url(${bgImg.src})`;
 
   bgImg.onerror = function () {
