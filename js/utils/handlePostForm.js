@@ -1,8 +1,4 @@
-import {
-  updateFormField,
-  updateHeroImage,
-  randomIntergerNumber,
-} from './common';
+import { updateFormField, updateHeroImage, randomIntergerNumber } from './common';
 import { string, object } from 'yup';
 
 function handleChangeImageBtn(postChangeImage) {
@@ -33,6 +29,21 @@ async function validateForm(form, dataForm) {
   }
 }
 
+function handleChangeUploadImage() {
+  const methodList = document.querySelectorAll('[name="flexRadioImage"]');
+  const optionList = document.querySelectorAll('.optionInput');
+  if (!methodList || !optionList) return;
+
+  // for (let index = 0; index < methodList.length; index++) {
+  //   methodList[index] ? (optionList[index].hidden = false) : (optionList[index].hidden = true);
+  // }
+
+  methodList.forEach((method, index) => {
+    optionList[index].hidden = true;
+    if (method.checked) optionList[index].hidden = false;
+  });
+}
+
 export function handlePostForm({ formId, defaultData, onSubmit }) {
   const form = document.getElementById(formId);
   if (!form) return;
@@ -50,6 +61,10 @@ export function handlePostForm({ formId, defaultData, onSubmit }) {
     // update cover image
     updateHeroImage(defaultData.imageUrl);
   }
+
+  // handle choose cover photo
+  const selectImage = document.getElementById('selectImage');
+  selectImage.addEventListener('change', handleChangeUploadImage);
 
   // handlde change cover image
   handleChangeImageBtn(postChangeImage);

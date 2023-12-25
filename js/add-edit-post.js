@@ -6,6 +6,7 @@ async function handleSubmitForm(formValue) {
     // Disable Save button
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.disabled = true;
+    saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Saving';
 
     // call api
     let savePost = formValue.id
@@ -16,7 +17,10 @@ async function handleSubmitForm(formValue) {
     toast.success('Saved post successfully!');
 
     // Enable save button
-    if (savePost) saveBtn.disabled = false;
+    if (savePost) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Save';
+    }
 
     // redirect to post
     setTimeout(() => {
