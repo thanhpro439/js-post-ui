@@ -1,17 +1,46 @@
 import postApi from './api/postApi';
 import { handlePostForm, toast } from './utils';
 
+function removeUnnecessaryValue(formValue) {
+  const payload = { ...formValue };
+
+  // remove unnecessary field
+  if (payload.imageMethod === 'random') delete payload.image;
+  else delete payload.imageUrl;
+
+  // remove image method
+  delete payload.imageMethod;
+
+  // remove id if not exsis
+  if (!payload.id) delete payload.id;
+
+  return payload;
+}
+
+function jsonToFormData(jsonObject) {
+  const formData = new FormData();
+  for (const key in jsonObject) {
+    formData.set(key, jsonObject[key]);
+  }
+
+  return formData;
+}
+
 async function handleSubmitForm(formValue) {
   try {
+    const payload = removeUnnecessaryValue(formValue);
+    console.log({ payload, formValue });
+    const formData = jsonToFormData(payload);
+
     // Disable Save button
     const saveBtn = document.getElementById('saveBtn');
     saveBtn.disabled = true;
     saveBtn.innerHTML = '<i class="fas fa-save mr-1"></i> Saving';
 
     // call api
-    let savePost = formValue.id
-      ? await postApi.update(formValue)
-      : await postApi.add(formValue);
+    let savePost = payload.id
+      ? await postApi.updateFormData(formData)
+      : await postApi.addFormData(formData);
 
     // Toast message
     toast.success('Saved post successfully!');
@@ -23,10 +52,9 @@ async function handleSubmitForm(formValue) {
     }
 
     // redirect to post
-    setTimeout(() => {
-      if (savePost)
-        window.location.assign(`/post-detail.html?id=${savePost.id}`);
-    }, 4000);
+    // setTimeout(() => {
+    //   if (savePost) window.location.assign(`/post-detail.html?id=${savePost.id}`);
+    // }, 4000);
   } catch (error) {
     toast.error(`Error: ${error}`);
   }
