@@ -50,9 +50,10 @@ function handleClickEditPost(id) {
   const editPost = document.getElementById('goToEditPageLink');
   if (!editPost) return;
 
-  editPost.addEventListener('click', () => {
+  editPost.addEventListener('click', (e) => {
+    e.preventDefault();
     const editDir = `/add-edit-post.html?id=${id}`;
-    window.open(editDir);
+    window.location.assign(editDir);
   });
 }
 

@@ -30,9 +30,8 @@ export function updateHeroImage(urlImg) {
   if (!heroImage || !inputImage) return;
 
   const bgImg = new Image();
-  bgImg.src = urlImg;
-
-  inputImage.value = bgImg.src;
+  bgImg.src = Boolean(urlImg) ? urlImg : '';
+  inputImage.value = Boolean(urlImg) ? urlImg : '';
   heroImage.style.backgroundImage = `url(${bgImg.src})`;
 
   bgImg.onerror = function () {

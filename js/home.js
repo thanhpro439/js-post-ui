@@ -48,15 +48,18 @@ function handleClickPost() {
       const postitemmenu = li.querySelector('[data-id="postitemmenu"]');
 
       if (postitemmenu && postitemmenu.contains(e.target)) return;
-      window.open(`/post-detail.html?id=${postID}`, '_blank');
+      window.location.assign(`/post-detail.html?id=${postID}`);
+
+      // window.open(`/post-detail.html?id=${postID}`, '_blank');
     });
 
-    // bind click event for edit/delete post
+    // bind click event for edit/delete post icon
     const editBtn = li.querySelector('[data-id="edit"]');
     if (!editBtn) return;
 
     editBtn.addEventListener('click', () => {
-      window.open(`/add-edit-post.html?id=${postID}`, '_blank');
+      window.location.assign(`/add-edit-post.html?id=${postID}`);
+      // window.open(`/add-edit-post.html?id=${postID}`, '_blank');
     });
   });
 }

@@ -1,5 +1,5 @@
-import { updateFormField, updateHeroImage, randomIntergerNumber } from './common';
-import { string, object } from 'yup';
+import { updateFormField, updateHeroImage, randomIntergerNumber, updateTextPost } from './common';
+import { string, object, mixed } from 'yup';
 
 function handleChangeImageBtn(postChangeImage) {
   postChangeImage.addEventListener('click', () => {
@@ -11,36 +11,86 @@ function handleChangeImageBtn(postChangeImage) {
   });
 }
 
+function setFieldError(form, name, message) {
+  const field = form.querySelector(`[name=${name}]`);
+  if (field) {
+    // mark this form is unvalid
+    field.setCustomValidity(message);
+    
+    // show error
+    updateTextPost(field.parentElement, '.invalid-feedback', message);
+  }
+}
+
 async function validateForm(form, dataForm) {
   const dataObject = object({
-    title: string().required(),
-    author: string().required(),
-    description: string().required(),
-    imageUrl: string().url().required('Please add cover photo.'),
+    title: string().required('Please enter the title!'),
+    author: string().required('Please enter the author!'),
+    description: string().required('Please enter the description!'),
+    imageMethod: string(),
+    imageUrl: string().when('imageMethod', ([imageMethod], imgUrl) => {
+      if (imageMethod === 'random') return imgUrl.required('Please choose a cover photo');
+    }),
+    imageUpload: mixed().when('imageMethod', ([imageMethod], img) => {
+      if (imageMethod === 'upload')
+        return img
+          .test('required', 'Please upload a cover photo!', (value) => Boolean(value.name.length))
+          .test(
+            'file size',
+            'Please upload image smaller than 5MB',
+            (value) => value.size <= 5242880,
+          );
+    }),
   });
 
   try {
+    // reset error
+    ['title', 'author', 'description', 'imageUrl', 'imageUpload'].forEach((field) => {
+      setFieldError(form, field, '');
+    });
     await dataObject.validate(dataForm, {
       abortEarly: false,
     });
   } catch (error) {
-    form.classList.add('was-validated');
-    return;
+    if (error.name === 'ValidationError') {
+      for (const validationError of error.inner) {
+        const name = validationError.path;
+        setFieldError(form, name, validationError.message);
+      }
+    }
   }
+
+  const isValid = form.checkValidity();
+
+  isValid ? form.classList.remove('was-validated') : form.classList.add('was-validated');
+  return isValid;
 }
 
 function handleChangeUploadImage() {
-  const methodList = document.querySelectorAll('[name="flexRadioImage"]');
+  const methodList = document.querySelectorAll('[name="imageMethod"]');
   const optionList = document.querySelectorAll('.optionInput');
   if (!methodList || !optionList) return;
-
-  // for (let index = 0; index < methodList.length; index++) {
-  //   methodList[index] ? (optionList[index].hidden = false) : (optionList[index].hidden = true);
-  // }
 
   methodList.forEach((method, index) => {
     optionList[index].hidden = true;
     if (method.checked) optionList[index].hidden = false;
+  });
+}
+
+function handleUploadImageInput() {
+  const uploadImageInput = document.getElementById('uploadImageFile');
+
+  if (!uploadImageInput) return;
+
+  uploadImageInput.addEventListener('change', () => {
+    const file = uploadImageInput.files[0];
+    if (!file || !file.name) {
+      updateHeroImage('');
+      return;
+    }
+
+    const imageUrl = URL.createObjectURL(file);
+    updateHeroImage(imageUrl);
   });
 }
 
@@ -69,23 +119,27 @@ export function handlePostForm({ formId, defaultData, onSubmit }) {
   // handlde change cover image
   handleChangeImageBtn(postChangeImage);
 
+  // handleUploadImageInput
+  handleUploadImageInput();
+
   // submit form
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const updateData = defaultData;
+    const updateData = {};
 
     // get value from field
-    ['title', 'author', 'description', 'imageUrl'].forEach((field) => {
-      updateData[field] = form.querySelector(`[name=${field}]`).value;
-    });
+    const formData = new FormData(form);
+    for (const [key, value] of formData) {
+      updateData[key] = value;
+    }
 
     // update add/edit timestamp
     const now = new Date();
     updateData['updatedAt'] = Date.parse(now);
 
+
     // validate data
-    await validateForm(form, updateData);
-    const isValid = form.checkValidity();
+    const isValid = await validateForm(form, updateData);
     if (!isValid) return;
 
     // call onSubmit function

@@ -95,7 +95,7 @@
                   type="text"
                   class="form-control"
                   name="author"
-                  placeholder="Eg: Paul Nguyen"
+                  placeholder="Eg: Thanh Ramen"
                   required
                 />
                 <div class="invalid-feedback">Please enter author of this post!</div>
@@ -119,8 +119,9 @@
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="flexRadioImage"
+                    name="imageMethod"
                     id="randomImage"
+                    value="random"
                     checked
                   />
                   <label class="form-check-label" for="randomImage"> Random Image </label>
@@ -129,8 +130,9 @@
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="flexRadioImage"
+                    name="imageMethod"
                     id="uploadImage"
+                    value="upload"
                   />
                   <label class="form-check-label" for="uploadImage"> Upload your image </label>
                 </div>
@@ -146,22 +148,33 @@
                 <button type="button" id="postChangeImage" class="btn btn-dark">
                   Change post image
                 </button>
+              </div>
+
+              <!-- Option 2: Upload from local -->
+              <div hidden id="uploadImageInput" class="input-group mb-3 optionInput">
+                <input
+                  type="file"
+                  class="form-control"
+                  name="imageUpload"
+                  id="uploadImageFile"
+                  accept="image/*"
+                />
+                <label class="input-group-text" for="uploadImageFile">Upload</label>
+                <div class="invalid-feedback">Please choose a cover photo of this post!</div>
+              </div>
+
+              <div class="form-group mb-3 validateUploadImage">
                 <input
                   hidden
                   id="postInputImageCover"
                   type="text"
                   class="form-control"
                   name="imageUrl"
-                  placeholder="Eg: Paul Nguyen"
                   required
                 />
-                <div class="invalid-feedback">Please choose a cover photo of this post!</div>
-              </div>
-
-              <!-- Option 2: Upload from local -->
-              <div hidden id="uploadImageInput" class="input-group mb-3 optionInput">
-                <input type="file" class="form-control" id="inputGroupFile02" />
-                <label class="input-group-text" for="inputGroupFile02">Upload</label>
+                <div id="invalidImage" class="invalid-feedback">
+                  Please choose a cover photo of this post!
+                </div>
               </div>
 
               <div class="text-center">
