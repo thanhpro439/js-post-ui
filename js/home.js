@@ -1,10 +1,11 @@
 import postApi from './api/postApi';
-import { handlePagination, handleSearch, paginationPost, renderPostList } from './utils';
+import { handlePagination, handleSearch, paginationPost, renderPostList, toast } from './utils';
 
 async function handleFilterChange(filterName, filterValue) {
   // update query params
   const url = new URL(window.location);
-  url.searchParams.set(filterName, filterValue);
+
+  if (filterName) url.searchParams.set(filterName, filterValue);
 
   // reset page to 1 if use searching function
   if (filterName === 'title_like') {
@@ -19,7 +20,6 @@ async function handleFilterChange(filterName, filterValue) {
   // re-render post list
   renderPostList(data);
   paginationPost(pagination);
-  handleClickPost();
 }
 
 function setDefaultQueryParam() {
@@ -49,8 +49,6 @@ function handleClickPost() {
 
       if (postitemmenu && postitemmenu.contains(e.target)) return;
       window.location.assign(`/post-detail.html?id=${postID}`);
-
-      // window.open(`/post-detail.html?id=${postID}`, '_blank');
     });
 
     // bind click event for edit/delete post icon
@@ -59,7 +57,21 @@ function handleClickPost() {
 
     editBtn.addEventListener('click', () => {
       window.location.assign(`/add-edit-post.html?id=${postID}`);
-      // window.open(`/add-edit-post.html?id=${postID}`, '_blank');
+    });
+
+    const removeBtn = li.querySelector('[data-id="remove"]');
+    if (!removeBtn) return;
+
+    removeBtn.addEventListener('click', async (e) => {
+      try {
+        if (window.confirm('Are you sure to remove this post?')) {
+          await postApi.remove(postID);
+          await handleFilterChange();
+          toast.success('Remove post successfully!');
+        }
+      } catch (error) {
+        toast.error(error.message);
+      }
     });
   });
 }

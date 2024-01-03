@@ -52,9 +52,9 @@ async function handleSubmitForm(formValue) {
     }
 
     // redirect to post
-    // setTimeout(() => {
-    //   if (savePost) window.location.assign(`/post-detail.html?id=${savePost.id}`);
-    // }, 4000);
+    setTimeout(() => {
+      if (savePost) window.location.assign(`/post-detail.html?id=${savePost.id}`);
+    }, 4000);
   } catch (error) {
     toast.error(`Error: ${error}`);
   }
